@@ -1,0 +1,4 @@
+# Ignore all into c dir
+c/*
+# Except c source code
+!c/*.c
