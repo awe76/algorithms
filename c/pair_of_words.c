@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 typedef struct match {
@@ -6,6 +7,12 @@ typedef struct match {
     int from2;
     int count;
 } match;
+
+typedef struct range {
+    char* str; 
+    int from;
+    int to;
+} range;
 
 // detect if s1 = [from1, from1+count) matches s2 = [from2, from2 + count)
 int is_match(char s1[], char s2[], int from1, int from2, int count) {
@@ -71,85 +78,124 @@ int get_result_len(char s1[], char s2[], int l1, int l2, match m) {
     if (m.from1 == 0) {
         return l2 - m.count + l1;
     }
+
+    return -1;
 } 
 
 void set_result(char s1[], char s2[], int l1, int l2, match m, char res[]) {
-    int k = -1;
-    if (m.count == 0) {
-        for (int i = 0; i < l1; i++) {
-            res[++k] = s1[i];
-        }
-
-        for (int i = 0; i < l2; i++) {
-            res[++k] = s2[i];
-        }
-
-        return;
-    }
+    range r1 = {.str = s1, .from = 0, .to = l1};
+    range r2 = {.str = s2, .from = 0, .to = l2};
 
     if (m.count == l1) {
-        for (int i = 0; i < l2; i++) {
-            res[++k] = s2[i];
-        }
-
-        return;
+        res = s2;
     }
 
-    if (m.from2 == 0) {
-        for (int i = 0; i < l1 - m.count; i++) {
-            res[++k] = s1[i];
+    if (m.count != 0) {
+        if (m.from2 == 0) {
+            r1.to = l1 - m.count;
         }
 
-        for (int i = m.from2; i < l2; i++) {
-            res[++k] = s2[i];
+        if (m.from1 == 0) {
+            r1.str = s2;
+            r2.str = s1;
+            r1.to = l2 - m.count;
+            r2.to = l1;
         }
-
-        return;
     }
 
-    if (m.from1 == 0) {
-        for (int i = 0; i < l2 - m.count; i++) {
-            res[++k] = s2[i];
-        }
+    int k = -1;
+    for (int i = r1.from; i < r1.to; i++) {
+        res[++k] = r1.str[i];
+    }
 
-        for (int i = m.from1; i < l1; i++) {
-            res[++k] = s1[i];
-        }
+    for (int i = r2.from; i < r2.to; i++) {
+        res[++k] = r2.str[i];
+    }
+}
 
-        return;
-    } 
+void test_is_match() {
+    char* s1 = "1101";
+    char* s2 = "0110111001";
+
+    int res = is_match(s1, s2, 0, 1, 4);
+    assert(res == 1);
+}
+
+void test_find_match() {
+    char* s1 = "1101";
+    char* s2 = "0110111001";
+
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+
+    match m = find_match(s1, s2, l1, l2);
+    assert(m.count == 4);
+    assert(m.from1 == 0);
+    assert(m.from2 == 1);
+}
+
+void test_find_match_self() {
+    char* s1 = "1101";
+    char* s2 = "1101";
+
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+
+    match m = find_match(s1, s2, l1, l2);
+    assert(m.count == 4);
+    assert(m.from1 == 0);
+    assert(m.from2 == 0);
+}
+
+void test_set_result() {
+    char* s1 = "1101";
+    char* s2 = "0111111111";
+
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+    match m = find_match(s1, s2, l1, l2);
+
+    int len = get_result_len(s1, s2, l1, l2, m);
+    char res[len + 1];
+    res[len] = '\0';
+
+    set_result(s1, s2, l1, l2, m, res);
+    assert(strcmp(res, "110111111111") == 0);
 }
 
 int main() {
-    char* s1 = "1101";
-    char* s2 = "0110111001";
-    int l1 = strlen(s1);
-    int l2 = strlen(s2);
-    
-    int res = is_match(s1, s2, 0, 1, 4);
-    printf("%d\n", res);
+    test_is_match();
+    test_find_match();
+    test_find_match_self();
+    test_set_result();
+
+    int l1;
+    printf("Enter first string's length:\n");
+    scanf("%d", &l1);
+
+    char s1[l1];
+    printf("Enter first string:\n");
+    scanf("%s", s1);
+
+    int l2;
+    printf("Enter second string's length:\n");
+    scanf("%d", &l2);
+
+    char s2[l2];
+    printf("Enter second string:\n");
+    scanf("%s", s2);
 
     match m = find_match(s1, s2, l1, l2);
-    printf("%d:[%d, %d]\n", m.count, m.from1, m.from2);
 
-    s1 = "1101";
-    s2 = "0111111111";
+    int len = get_result_len(s1, s2, l1, l2, m);
+    char res[len + 1];
+    res[len] = '\0';
 
-    m = find_match(s1, s2, l1, l2);
-    printf("%d:[%d, %d]\n", m.count, m.from1, m.from2);
+    set_result(s1, s2, l1, l2, m, res);
 
-    int ln = get_result_len(s1, s2, l1, l2, m);
-    printf("%d\n", ln);
-    char r[ln + 1];
-    r[ln] = '\0';
+    printf("Result is:\n");
+    printf("%s\n", res);
 
-    set_result(s1, s2, l1, l2, m, r);
-    printf("%s\n", r); // 110111111111
-
-    s1 = "1101";
-    s2 = "1101";
-
-    m = find_match(s1, s2, l1, l2);
-    printf("%d:[%d, %d]\n", m.count, m.from1, m.from2);
+    return 0;
 }
 
