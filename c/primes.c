@@ -5,10 +5,10 @@ void primes_step(int n, int m, int res[], int max) {
         int i = 0;
         while (n % res[i++] != 0 && i < m) {}
         if (i < m) {
-            primes_step(n + 1, m, res, max);
+            primes_step(n + 2, m, res, max);
         } else {
             res[m] = n;
-            primes_step(n + 1, m + 1, res, max);
+            primes_step(n + 2, m + 1, res, max);
         }
     }
 }
