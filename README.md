@@ -1,2 +1,2 @@
-# Learning of algorithms in free form
+# Algorithms learning in free form
 
