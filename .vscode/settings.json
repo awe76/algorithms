@@ -4,6 +4,10 @@
         "chrono": "c",
         "mutex": "c",
         "__debug": "c",
-        "algorithm": "c"
-    }
+        "algorithm": "c",
+        "iosfwd": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

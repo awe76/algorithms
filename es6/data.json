@@ -1,0 +1,32 @@
+[
+    {
+        "id": 111,
+        "projectId": 123,
+        "type": "TypeA"
+    },
+    {
+        "id": 222,
+        "projectId": 123,
+        "type": "TypeB"
+    },
+    {
+        "id": 333,
+        "projectId": 123,
+        "type": "TypeC"
+    },
+    {
+        "id": 444,
+        "projectId": 123,
+        "type": "TypeD"
+    },
+    {
+        "id": 555,
+        "projectId": 123,
+        "type": "TypeX"
+    },
+    {
+        "id": 666,
+        "projectId": 123,
+        "type": null
+    }
+]
