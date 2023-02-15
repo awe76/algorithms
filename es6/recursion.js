@@ -56,8 +56,8 @@ function flatten({id, projectId, type, children}, result) {
     result.push(current);
 
     if (children) {
-        for (key of Object.keys(children)) {
-            for (item of children[key]) {
+        for (const key of Object.keys(children)) {
+            for (const item of children[key]) {
                 flatten(item, result);
             }
         }
